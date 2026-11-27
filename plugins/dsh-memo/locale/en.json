@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Memo · requirement list",
+    "description": "Docks a floating memo list on the right side of each conversation and collapses it into a small icon in the top-right bar. Every conversation keeps its own list. The panel can be dragged and resized, the list scrolls on its own, and adding or editing slides up a bottom drawer. Requirements are recorded as a name plus details, and can be checked off, edited, or deleted. The agent can park requirements you mention but postpone through the memo tool, into the current conversation's list. A horizontal settings window lets you rewrite any interface label, change the text size and language, and switch the panel background to a solid color, gradient, or a local image with adjustable opacity and blur. Data stays on this machine in the profile directory; the panel slides in and out with a soft shadow.",
+    "detail": "docs/DETAIL.md"
+  }
+}

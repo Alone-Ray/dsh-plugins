@@ -1,0 +1,3 @@
+- insert:
+    - id: dsh-memo
+      name: '@local/dsh-memo'
