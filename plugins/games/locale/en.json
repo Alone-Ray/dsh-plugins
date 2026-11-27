@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Games",
+    "description": "Adds a Games entry to the left sidebar with a hub page. Run games embedded in the page, or open several draggable, resizable windows that dock to either half of the screen. Ships Snake, Breakout and 2048, plus custom image/video backgrounds.",
+    "detail": "docs/DETAIL.md"
+  }
+}

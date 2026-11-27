@@ -5,6 +5,7 @@ A home for my [DeepSeek Harness](https://deepseek-harness.github.io/deepseek-har
 | Plugin | What it does |
 | --- | --- |
 | [session-cost](plugins/session-cost) | Shows the estimated spend of the open session next to the `tok` reading under the message composer. |
+| [games](plugins/games) | Games hub: run mini-games embedded or in several floating windows, with Snake, Breakout, 2048 and custom backgrounds. |
 
 ## Install a plugin
 

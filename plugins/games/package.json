@@ -1,0 +1,52 @@
+{
+  "name": "@local/dsh-games",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Games hub for DeepSeek Harness: embedded and multi-window mini-games (Snake, Breakout, 2048) with custom backgrounds.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alone-Ray/dsh-plugins.git",
+    "directory": "plugins/games"
+  },
+  "homepage": "https://github.com/Alone-Ray/dsh-plugins/tree/main/plugins/games",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "games",
+    "mini-games",
+    "snake",
+    "2048"
+  ],
+  "engines": {
+    "dsh": "^0.2.3-alpha.2"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "docs",
+    "README.md",
+    "LICENSE",
+    "test"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true
+    }
+  }
+}
