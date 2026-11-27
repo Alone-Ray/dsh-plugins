@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="300" viewBox="0 0 640 300">
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="120" y="48" width="400" height="104" rx="18" stroke="#8b93a1" stroke-opacity=".6" stroke-width="2"/>
+    <path d="M146 84h196M146 110h132" stroke="#8b93a1" stroke-opacity=".32" stroke-width="6"/>
+    <path d="M446 92l26 26 26-26" stroke="#8b93a1" stroke-opacity=".3" stroke-width="4"/>
+  </g>
+  <g fill="none" stroke-linecap="round">
+    <rect x="120" y="176" width="104" height="26" rx="13" stroke="#8b93a1" stroke-opacity=".55" stroke-width="2"/>
+    <path d="M136 189h72" stroke="#8b93a1" stroke-opacity=".45" stroke-width="7"/>
+    <rect x="240" y="176" width="120" height="26" rx="13" stroke="#8b93a1" stroke-opacity=".55" stroke-width="2"/>
+    <path d="M256 189h88" stroke="#8b93a1" stroke-opacity=".45" stroke-width="7"/>
+    <rect x="376" y="173" width="144" height="32" rx="16" fill="#c79a3a" fill-opacity=".12" stroke="#c79a3a" stroke-width="2"/>
+    <circle cx="398" cy="189" r="8" fill="#c79a3a" stroke="#b08226" stroke-width="1.4"/>
+    <path d="M394.6 184.8 398 188.6l3.4-3.8M398 188.6v5M395.4 189.6h5.2M395.4 192h5.2" stroke="#fff6e2" stroke-width="1.6"/>
+    <path d="M420 189h82" stroke="#8b93a1" stroke-opacity=".55" stroke-width="8"/>
+  </g>
+  <ellipse cx="448" cy="189" rx="86" ry="30" fill="none" stroke="#c79a3a" stroke-opacity=".35" stroke-width="2" stroke-dasharray="6 8"/>
+</svg>

@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Session cost",
+    "description": "Shows an estimated spend for the open session in the composer statistics row, immediately after the token reading. The Host folds each step's provider-reported token usage per model and prices it with the DeepSeek official peak and off-peak rates for Beijing time, so the pill updates as steps settle. Prices and currency are configurable; the plugin calls no external service and sends nothing anywhere.",
+    "detail": "docs/DETAIL.md"
+  }
+}

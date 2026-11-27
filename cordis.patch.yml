@@ -1,0 +1,3 @@
+- insert:
+    - id: dsh-session-cost
+      name: '@local/dsh-session-cost'
