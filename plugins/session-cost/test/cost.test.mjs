@@ -1,4 +1,4 @@
-﻿import { apply } from '../index.js';
+import { apply } from '../index.js';
 
 const PEAK = Date.UTC(2026, 10, 27, 2, 0, 0); // Friday 10:00 Beijing
 const OFF = Date.UTC(2026, 10, 27, 14, 0, 0); // Friday 22:00 Beijing

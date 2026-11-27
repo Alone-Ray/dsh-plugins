@@ -6,8 +6,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Alone-Ray/dsh-session-cost.git"
+    "url": "git+https://github.com/Alone-Ray/dsh-plugins.git",
+    "directory": "plugins/session-cost"
   },
+  "homepage": "https://github.com/Alone-Ray/dsh-plugins/tree/main/plugins/session-cost",
   "keywords": [
     "dsh",
     "dsh-plugin",
