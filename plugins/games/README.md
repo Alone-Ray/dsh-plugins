@@ -41,6 +41,27 @@ DSH 内置的小游戏容器。左侧栏入口、内嵌 / 多窗口、三个小�
 - 走 `native` 适配器，但自己建 DOM、自己管样式——验证这条链路不只支持 canvas。
 - 移植现有 DOM 小游戏的流程见 `docs/PORTING.md`。
 
+### 乒乓球（第三方移植）
+
+- 源码：[vruntime-labs/ping-pong](https://github.com/vruntime-labs/ping-pong)（MIT），保留原版权声明，见 `THIRD_PARTY_NOTICES.md`。
+- 只改了集成部分：容器内输入、固定 60Hz 步长、响应式画布、去掉外链/触屏按钮，加暂停 / 重开 / 先得 5 分。
+- W/S 或上下键移动，鼠标拖动也可；空格暂停，R 重开。
+- 这是第一个真正的外部源码移植，实际改动记录见 `docs/PORTING.md`。
+
+### 太空侵略者（第三方移植）
+
+- 源码：[vrk/space-invaders](https://github.com/vrk/space-invaders)（MIT），13 个浏览器脚本内联成一个工厂。
+- 左右键移动，空格射击，P 暂停，回车开始；6 个游戏里唯一的纯街机射击。
+- 改动：`document` 监听改容器、App 接管 canvas、加 `pause/resume/destroy`、文案本地化。
+
+### 推箱子（第三方移植）
+
+- 源码：[taniarascia/sokoban](https://github.com/taniarascia/sokoban)（MIT），ES modules 内联，单关卡。
+- 方向键 / WASD 移动，把 6 个箱子推到目标点；R 或右上角按钮重开。
+- 改动：canvas 进容器、键盘监听改容器、加响应式缩放和胜利提示。
+
+> 第三方源码都先审后下：许可证、网络、动态执行、存储、资产来源的检查记录在 `docs/SECURITY-REVIEW.md`。
+
 ## 视觉
 
 极光渐变背景（可换成自定义图片 / 视频，存在本机）、卡片与按钮阴影、悬停位移、内嵌舞台从右侧滑入、窗口收回淡出、玻璃抽屉；全部跟随 DSH 深色/浅色主题，并尊重「减少动态效果」。
@@ -49,12 +70,14 @@ DSH 内置的小游戏容器。左侧栏入口、内嵌 / 多窗口、三个小�
 
 ## 当前状态
 
-- 三个游戏跑通：贪吃蛇（native/canvas）、打砖块（web 适配器）、2048（native/DOM）；内嵌、多窗口、暂停、缩放、最高分都可用。
-- `flash`（Ruffle）适配器还没开始；真实第三方 HTML5 源码移植还没做，流程已写在 `docs/PORTING.md`。
+- 六个游戏跑通：贪吃蛇（native/canvas）、打砖块（web 适配器）、2048（native/DOM）、乒乓球 / 太空侵略者 / 推箱子（第三方移植）。
+- 第三方移植覆盖 canvas 单文件、canvas 多文件、ES modules / DOM 三种形态。
+- 框架补齐：开窗不再丢内嵌进度、主题切换热更新。
+- `flash`（Ruffle）适配器还没开始；第三方 DOM 游戏（A5）还没接。
 
 ## 下一步
 
-按 `docs/PORTING.md` 接一个真实的第三方 HTML5 小游戏（canvas 优先），验证移植成本和改动量；再评估 Flash / Ruffle。
+按 `docs/PORTING.md` 接一个第三方 DOM 游戏（A5），再评估 Flash / Ruffle。
 
 ## 文档
 
@@ -67,6 +90,7 @@ DSH 内置的小游戏容器。左侧栏入口、内嵌 / 多窗口、三个小�
 | `docs/WINDOW.md` | 窗口模型与限制 |
 | `docs/DETACH.md` | 自由窗（独立系统窗口）需求与方案 |
 | `docs/PORTING.md` | 移植现有 HTML5 小游戏的流程与验收 |
+| `docs/SECURITY-REVIEW.md` | 第三方源码审查记录 |
 | `docs/UI.md` | 视觉与交互规范 |
 | `docs/ROADMAP.md` | 里程碑与决策记录 |
 | `docs/CHANGELOG.md` | 变更记录 |

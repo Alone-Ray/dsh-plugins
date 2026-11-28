@@ -47,7 +47,7 @@ const myGame = {
 ```js
 {
   apiVersion: 1,
-  theme: { tokens },          // 主题变量快照，挂载时读取
+  theme: { tokens, subscribe(cb) },  // 主题变量快照；subscribe 在主题切换时回调新 tokens
   locale: { t, language },    // 文案
   get size(),                 // { width, height, dpr }，实时读容器
   save: { get(key), set(key, value) },  // 按游戏隔离

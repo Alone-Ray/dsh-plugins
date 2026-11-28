@@ -13,7 +13,7 @@ function expect(label, ok) {
 
 const pkg = JSON.parse(read('package.json'));
 expect('name', pkg.name === '@local/dsh-games');
-expect('version', pkg.version === '1.0.0');
+expect('version', pkg.version === '1.2.0');
 expect('license', pkg.license === 'MIT');
 expect('repository directory', pkg.repository?.directory === 'plugins/games');
 expect('engines.dsh', pkg.engines?.dsh === '^0.2.3-alpha.2');
@@ -33,8 +33,13 @@ const client = read('client.js');
 expect('client loader id', client.includes("id: '@local/dsh-games'"));
 expect('main panel', client.includes("key: 'games'"));
 expect('sidebar entry', client.includes("id: 'games'"));
-for (const id of ['snake', 'breakout', '2048']) expect('game ' + id, client.includes("id: '" + id + "'"));
+for (const id of ['snake', 'breakout', '2048', 'pong', 'invaders', 'sokoban']) expect('game ' + id, client.includes("id: '" + id + "'"));
 expect('web adapter', client.includes('createWebRuntime'));
+expect('pong port source', client.includes('vruntime-labs/ping-pong'));
+expect('invaders port source', client.includes('vrk/space-invaders'));
+expect('sokoban port source', client.includes('taniarascia/sokoban'));
+expect('theme hot update', client.includes('theme/change') && client.includes('themeListeners'));
+expect('active pause', client.includes('activeRef'));
 
 for (const [locale, detail] of [
   ['en', 'docs/DETAIL.md'],
@@ -47,7 +52,7 @@ for (const [locale, detail] of [
   expect(locale + ' detail file', existsSync(join(root, detail)));
 }
 
-for (const file of ['LICENSE', 'README.md', 'docs/DETAIL.md', 'docs/DETAIL.zh.md', 'docs/preview.svg', 'icon.svg']) {
+for (const file of ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'README.md', 'docs/DETAIL.md', 'docs/DETAIL.zh.md', 'docs/preview.svg', 'docs/SECURITY-REVIEW.md', 'icon.svg']) {
   expect('file ' + file, existsSync(join(root, file)));
 }
 

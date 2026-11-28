@@ -1,5 +1,41 @@
 # 变更记录
 
+## 1.2.0 — 2026-11-28
+
+### 新增
+
+- **太空侵略者**：移植 [vrk/space-invaders](https://github.com/vrk/space-invaders)（MIT）。13 个浏览器脚本内联成一个工厂，改容器输入、App 接管 canvas、加 `pause/resume/destroy`、文案本地化；无图片/音频依赖。
+- **推箱子**：移植 [taniarascia/sokoban](https://github.com/taniarascia/sokoban)（MIT）。ES modules 内联，canvas 进容器，容器键盘 + 重开按钮 + 胜利提示。
+- **`docs/SECURITY-REVIEW.md`**：第三方源码「先审后下」的规则、检查项和本次记录；三个已移植仓库均通过网络/动态执行/存储/资产审查。
+- `THIRD_PARTY_NOTICES.md` 增加太空侵略者、推箱子的 MIT 全文。
+
+### 变更
+
+- 第三方移植覆盖 canvas 单文件、canvas 多文件、ES modules 三种形态；游戏总数到六个。
+- 版本 1.2.0；测试覆盖 `invaders`、`sokoban` 和审查文档。
+
+## 1.1.0 — 2026-11-28
+
+### 新增
+
+- **乒乓球（pong）**：移植 [vruntime-labs/ping-pong](https://github.com/vruntime-labs/ping-pong)（MIT），第一个真实第三方 canvas 游戏。保留原游戏规则，改了容器化输入、固定 60Hz 步长、响应式画布、暂停/重开/先得 5 分，删掉外链和触屏按钮。
+- **`THIRD_PARTY_NOTICES.md`**：保留上游 MIT 全文和改动说明。
+- `docs/PORTING.md` 增加这次移植的实际改动表。
+
+### 变更
+
+- **开窗不再丢内嵌进度**：内嵌运行时保持挂载，开窗时暂停，收回后继续原来那局；窗口本身仍是独立一局。
+- **主题热更新**：宿主监听 `theme/change`，通过 `host.theme.subscribe` 通知游戏；贪吃蛇和打砖块会更新调色板，不需重开。
+- 兼容记分卡：B7 转 ✅、B13 转 🟡，汇总为 15 ✅ / 6 🟡 / 9 ❌ / 1 ⛔。
+- 测试覆盖 pong 和第三方声明文件。
+
+## 1.0.0 — 2026-11-27
+
+### 发布
+
+- 首次发布到 [Alone-Ray/dsh-plugins](https://github.com/Alone-Ray/dsh-plugins/tree/main/plugins/games)，tag `v1.0.0`。
+- 补齐 LICENSE、详情页（DETAIL / preview.svg）、locale `meta.detail`、发布清单字段和 `test/games.test.mjs`。
+
 ## 0.7.2 — 2026-11-27
 
 ### 文档

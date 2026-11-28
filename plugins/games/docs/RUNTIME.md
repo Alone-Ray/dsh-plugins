@@ -30,7 +30,7 @@ export const definition = {
 
 ```js
 {
-  theme: { tokens },            // 只读的主题变量，供 canvas 取色
+  theme: { tokens, subscribe(cb) }, // 主题变量快照；subscribe 返回取消函数
   locale: { t, language },      // 游戏文案
   size: { width, height, dpr }, // 当前容器尺寸
   audio: { unlock(), mute(bool) },

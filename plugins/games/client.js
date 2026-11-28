@@ -109,6 +109,28 @@ window.__ModuleLoader__.load({
       g2048Over: '没有可走的步了',
       g2048Win: '凑出 2048！',
       g2048Restart: '按 R 或点击重开',
+      pongTitle: '乒乓球',
+      pongDesc: 'W/S 或上下键移动，先得 5 分获胜；空格暂停，R 重开。',
+      pongTag: '第三方移植',
+      pongHint: 'W / S 或 ↑ / ↓ 移动 · 空格暂停 · R 重开',
+      pongWin: '你赢了',
+      pongLose: 'AI 赢了',
+      pongPaused: '已暂停',
+      pongRestart: '按 R 或空格重开',
+      invadersTitle: '太空侵略者',
+      invadersDesc: '左右键移动，空格射击；P 暂停；回车开始。',
+      invadersTag: '第三方移植',
+      invadersStart: '按回车开始',
+      invadersOver: '游戏结束',
+      invadersScore: '得分',
+      invadersRestart: '按回车再来一局',
+      invadersPaused: '已暂停',
+      invadersResume: '按 P 继续',
+      sokobanTitle: '推箱子',
+      sokobanDesc: '方向键 / WASD 移动，把所有箱子推到目标点；R 重开。',
+      sokobanTag: '第三方移植',
+      sokobanWin: '过关！',
+      sokobanRestart: '重开',
       running: '运行中',
     };
 
@@ -203,6 +225,28 @@ window.__ModuleLoader__.load({
       g2048Over: 'No moves left',
       g2048Win: 'You reached 2048',
       g2048Restart: 'Press R or click to retry',
+      pongTitle: 'Ping Pong',
+      pongDesc: 'Move with W/S or the arrow keys; first to 5 wins. Space pauses, R restarts.',
+      pongTag: 'Third-party port',
+      pongHint: 'W / S or ↑ / ↓ to move · Space to pause · R to restart',
+      pongWin: 'You win',
+      pongLose: 'AI wins',
+      pongPaused: 'Paused',
+      pongRestart: 'Press R or Space to retry',
+      invadersTitle: 'Space Invaders',
+      invadersDesc: 'Arrow keys to move, Space to shoot, P to pause; Enter starts.',
+      invadersTag: 'Third-party port',
+      invadersStart: 'Press Enter to start',
+      invadersOver: 'Game over',
+      invadersScore: 'Score',
+      invadersRestart: 'Press Enter to play again',
+      invadersPaused: 'Paused',
+      invadersResume: 'Press P to continue',
+      sokobanTitle: 'Sokoban',
+      sokobanDesc: 'Move with the arrow keys / WASD and push every box onto a target. R restarts.',
+      sokobanTag: 'Third-party port',
+      sokobanWin: 'Level clear!',
+      sokobanRestart: 'Restart',
       running: 'Running',
     };
 
@@ -228,14 +272,24 @@ window.__ModuleLoader__.load({
         const COLS = 22;
         const ROWS = 16;
         const TICK = 110;
-        const tokens = host.theme.tokens || {};
-        const color = (name, fallback) => tokens[name] || fallback;
-        const bg = color('--dsw-alias-bg-base', '#0b0d10');
-        const ink = color('--dsw-alias-label-secondary', '#8a8f98');
-        const label = color('--dsw-alias-label-primary', '#f5f6f8');
-        const accent = color('--dsw-alias-brand-primary', '#3d5afe');
-        const success = color('--dsw-alias-state-success-primary', '#3ecf8e');
-        const warn = color('--dsw-alias-state-warn-primary', '#ffb020');
+        const readColor = (tokens, name, fallback) => tokens[name] || fallback;
+        const initialTokens = host.theme.tokens || {};
+        let bg = readColor(initialTokens, '--dsw-alias-bg-base', '#0b0d10');
+        let ink = readColor(initialTokens, '--dsw-alias-label-secondary', '#8a8f98');
+        let label = readColor(initialTokens, '--dsw-alias-label-primary', '#f5f6f8');
+        let accent = readColor(initialTokens, '--dsw-alias-brand-primary', '#3d5afe');
+        let success = readColor(initialTokens, '--dsw-alias-state-success-primary', '#3ecf8e');
+        let warn = readColor(initialTokens, '--dsw-alias-state-warn-primary', '#ffb020');
+        const offTheme = host.theme.subscribe
+          ? host.theme.subscribe((tokens) => {
+              bg = readColor(tokens, '--dsw-alias-bg-base', '#0b0d10');
+              ink = readColor(tokens, '--dsw-alias-label-secondary', '#8a8f98');
+              label = readColor(tokens, '--dsw-alias-label-primary', '#f5f6f8');
+              accent = readColor(tokens, '--dsw-alias-brand-primary', '#3d5afe');
+              success = readColor(tokens, '--dsw-alias-state-success-primary', '#3ecf8e');
+              warn = readColor(tokens, '--dsw-alias-state-warn-primary', '#ffb020');
+            })
+          : function noop() {};
 
         let canvas = null;
         let ctx2d = null;
@@ -552,6 +606,7 @@ window.__ModuleLoader__.load({
           },
           destroy() {
             alive = false;
+            offTheme();
             if (raf) cancelAnimationFrame(raf);
             const container = canvas && canvas.parentElement;
             if (container) {
@@ -575,15 +630,26 @@ window.__ModuleLoader__.load({
       adapter: 'web',
       minSize: { w: 360, h: 300 },
       createGame(host) {
-        const tokens = host.theme.tokens || {};
-        const color = (name, fallback) => tokens[name] || fallback;
-        const bg = color('--dsw-alias-bg-base', '#0b0d10');
-        const ink = color('--dsw-alias-label-secondary', '#8a8f98');
-        const label = color('--dsw-alias-label-primary', '#f5f6f8');
-        const accent = color('--dsw-alias-brand-primary', '#3d5afe');
-        const success = color('--dsw-alias-state-success-primary', '#3ecf8e');
-        const warn = color('--dsw-alias-state-warn-primary', '#ffb020');
-        const danger = color('--dsw-alias-state-error-primary', '#ef5f5f');
+        const readColor = (tokens, name, fallback) => tokens[name] || fallback;
+        const initialTokens = host.theme.tokens || {};
+        let bg = readColor(initialTokens, '--dsw-alias-bg-base', '#0b0d10');
+        let ink = readColor(initialTokens, '--dsw-alias-label-secondary', '#8a8f98');
+        let label = readColor(initialTokens, '--dsw-alias-label-primary', '#f5f6f8');
+        let accent = readColor(initialTokens, '--dsw-alias-brand-primary', '#3d5afe');
+        let success = readColor(initialTokens, '--dsw-alias-state-success-primary', '#3ecf8e');
+        let warn = readColor(initialTokens, '--dsw-alias-state-warn-primary', '#ffb020');
+        let danger = readColor(initialTokens, '--dsw-alias-state-error-primary', '#ef5f5f');
+        const offTheme = host.theme.subscribe
+          ? host.theme.subscribe((tokens) => {
+              bg = readColor(tokens, '--dsw-alias-bg-base', '#0b0d10');
+              ink = readColor(tokens, '--dsw-alias-label-secondary', '#8a8f98');
+              label = readColor(tokens, '--dsw-alias-label-primary', '#f5f6f8');
+              accent = readColor(tokens, '--dsw-alias-brand-primary', '#3d5afe');
+              success = readColor(tokens, '--dsw-alias-state-success-primary', '#3ecf8e');
+              warn = readColor(tokens, '--dsw-alias-state-warn-primary', '#ffb020');
+              danger = readColor(tokens, '--dsw-alias-state-error-primary', '#ef5f5f');
+            })
+          : function noop() {};
         const COLS = 8;
         const ROWS = 4;
         const PADDLE_W = 0.2;
@@ -879,6 +945,7 @@ window.__ModuleLoader__.load({
           },
           destroy() {
             alive = false;
+            offTheme();
             if (raf) cancelAnimationFrame(raf);
             if (container) {
               container.removeEventListener('keydown', keydown);
@@ -1198,7 +1265,1281 @@ window.__ModuleLoader__.load({
       },
     };
 
-    const GAMES = [snakeGame, breakoutGame, game2048];
+    // Ported from vruntime-labs/ping-pong (MIT, Copyright (c) 2026 vruntime labs).
+    // Adapted for DSH: container-scoped input, fixed 60 Hz step, responsive canvas,
+    // removed external links and touch buttons, added pause / restart / win state.
+    const pongGame = {
+      id: 'pong',
+      titleKey: 'pongTitle',
+      descKey: 'pongDesc',
+      tagKey: 'pongTag',
+      adapter: 'native',
+      minSize: { w: 360, h: 280 },
+      create(host) {
+        const W = 600;
+        const H = 400;
+        const BAR = 30;
+        const STEP = 1000 / 60;
+        const keys = { up: false, down: false };
+        let root = null;
+        let canvas = null;
+        let ctx = null;
+        let container = null;
+        let raf = 0;
+        let alive = true;
+        let paused = false;
+        let last = 0;
+        let acc = 0;
+        let user = { x: 10, y: 0, width: 10, height: 80, score: 0 };
+        let ai = { x: W - 20, y: 0, width: 10, height: 80, score: 0 };
+        let ball = { x: W / 2, y: H / 2, radius: 8, dx: 5, dy: 5 };
+        let winner = null;
+
+        function playHeight() {
+          return H - BAR;
+        }
+
+        function resetBall() {
+          ball.x = W / 2;
+          ball.y = playHeight() / 2;
+          ball.dx = -ball.dx;
+        }
+
+        function reset() {
+          user = { x: 10, y: playHeight() / 2 - 40, width: 10, height: 80, score: 0 };
+          ai = { x: W - 20, y: playHeight() / 2 - 40, width: 10, height: 80, score: 0 };
+          ball = { x: W / 2, y: playHeight() / 2, radius: 8, dx: 5, dy: 5 };
+          keys.up = false;
+          keys.down = false;
+          winner = null;
+          paused = false;
+          last = 0;
+          acc = 0;
+        }
+
+        function collision(b, p) {
+          return (
+            b.x - b.radius < p.x + p.width &&
+            b.x + b.radius > p.x &&
+            b.y - b.radius < p.y + p.height &&
+            b.y + b.radius > p.y
+          );
+        }
+
+        function update() {
+          if (paused || winner) return;
+          const limit = playHeight();
+          const dir = (keys.up ? -6 : 0) + (keys.down ? 6 : 0);
+          user.y = Math.max(0, Math.min(limit - user.height, user.y + dir));
+          ai.y += (ball.y - (ai.y + ai.height / 2)) * 0.08;
+          ai.y = Math.max(0, Math.min(limit - ai.height, ai.y));
+
+          ball.x += ball.dx;
+          ball.y += ball.dy;
+          if (ball.y - ball.radius < 0 || ball.y + ball.radius > limit) ball.dy = -ball.dy;
+
+          const paddle = ball.x < W / 2 ? user : ai;
+          if (collision(ball, paddle)) ball.dx = -ball.dx;
+
+          if (ball.x - ball.radius < 0) {
+            ai.score += 1;
+            resetBall();
+          } else if (ball.x + ball.radius > W) {
+            user.score += 1;
+            resetBall();
+          }
+
+          if (user.score >= 5) winner = 'user';
+          else if (ai.score >= 5) winner = 'ai';
+        }
+
+        function text(value, x, y, size, color, align) {
+          ctx.fillStyle = color;
+          ctx.font = '600 ' + size + 'px ui-sans-serif, system-ui, sans-serif';
+          ctx.textAlign = align || 'left';
+          ctx.fillText(value, x, y);
+        }
+
+        function render() {
+          if (!ctx) return;
+          ctx.fillStyle = '#0b0d10';
+          ctx.fillRect(0, 0, W, H);
+
+          ctx.fillStyle = 'rgba(148,163,184,.22)';
+          for (let y = 0; y < playHeight(); y += 28) ctx.fillRect(W / 2 - 2, y, 4, 14);
+
+          text(String(user.score), W / 4, 56, 34, '#f8fafc', 'center');
+          text(String(ai.score), (3 * W) / 4, 56, 34, '#f8fafc', 'center');
+
+          ctx.fillStyle = '#f8fafc';
+          ctx.fillRect(user.x, user.y, user.width, user.height);
+          ctx.fillRect(ai.x, ai.y, ai.width, ai.height);
+          ctx.beginPath();
+          ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#111827';
+          ctx.fillRect(0, H - BAR, W, BAR);
+          text(t('pongHint'), W / 2, H - 10, 11, '#7dd3fc', 'center');
+
+          if (paused || winner) {
+            ctx.fillStyle = 'rgba(15,23,42,.74)';
+            ctx.fillRect(0, 0, W, H);
+            text(
+              winner ? (winner === 'user' ? t('pongWin') : t('pongLose')) : t('pongPaused'),
+              W / 2,
+              H / 2 - 4,
+              26,
+              '#f8fafc',
+              'center',
+            );
+            text(winner ? t('pongRestart') : t('snakePauseHint'), W / 2, H / 2 + 28, 12, '#94a3b8', 'center');
+          }
+          ctx.textAlign = 'left';
+        }
+
+        function layout() {
+          if (!canvas || !container || !ctx) return;
+          const rect = container.getBoundingClientRect();
+          const scale = Math.min(rect.width / W, rect.height / H);
+          const cssW = Math.max(1, Math.floor(W * scale));
+          const cssH = Math.max(1, Math.floor(H * scale));
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.style.width = cssW + 'px';
+          canvas.style.height = cssH + 'px';
+          canvas.width = Math.round(cssW * dpr);
+          canvas.height = Math.round(cssH * dpr);
+          ctx.setTransform((cssW / W) * dpr, 0, 0, (cssH / H) * dpr, 0, 0);
+        }
+
+        function frame(now) {
+          if (!alive) return;
+          if (!last) last = now;
+          const dt = Math.min(100, now - last);
+          last = now;
+          if (!paused && !winner) {
+            acc += dt;
+            let guard = 0;
+            while (acc >= STEP && guard < 5) {
+              update();
+              acc -= STEP;
+              guard += 1;
+            }
+          }
+          render();
+          raf = requestAnimationFrame(frame);
+        }
+
+        function keydown(event) {
+          if (event.key === 'w' || event.key === 'W' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            keys.up = true;
+          } else if (event.key === 's' || event.key === 'S' || event.key === 'ArrowDown') {
+            event.preventDefault();
+            keys.down = true;
+          } else if (event.key === ' ') {
+            event.preventDefault();
+            if (winner) reset();
+            else paused = !paused;
+            last = 0;
+            acc = 0;
+          } else if (event.key === 'r' || event.key === 'R') {
+            reset();
+          }
+        }
+
+        function keyup(event) {
+          if (event.key === 'w' || event.key === 'W' || event.key === 'ArrowUp') keys.up = false;
+          if (event.key === 's' || event.key === 'S' || event.key === 'ArrowDown') keys.down = false;
+        }
+
+        function pointerMove(event) {
+          if (!canvas || winner) return;
+          const rect = canvas.getBoundingClientRect();
+          if (!rect.height) return;
+          const y = ((event.clientY - rect.top) / rect.height) * H;
+          user.y = Math.max(0, Math.min(playHeight() - user.height, y - user.height / 2));
+        }
+
+        function pointerDown(event) {
+          pointerMove(event);
+          if (container && container.focus) container.focus({ preventScroll: true });
+        }
+
+        return {
+          mount(target) {
+            container = target;
+            root = document.createElement('div');
+            root.className = 'pong-game';
+            canvas = document.createElement('canvas');
+            root.appendChild(canvas);
+            target.appendChild(root);
+            target.tabIndex = 0;
+            target.style.outline = 'none';
+            ctx = canvas.getContext('2d');
+            reset();
+            layout();
+            target.addEventListener('keydown', keydown);
+            target.addEventListener('keyup', keyup);
+            canvas.addEventListener('pointermove', pointerMove);
+            canvas.addEventListener('pointerdown', pointerDown);
+            if (target.focus) target.focus({ preventScroll: true });
+            raf = requestAnimationFrame(frame);
+          },
+          resize() {
+            layout();
+          },
+          pause() {
+            paused = true;
+          },
+          resume() {
+            paused = false;
+            last = 0;
+            acc = 0;
+          },
+          destroy() {
+            alive = false;
+            if (raf) cancelAnimationFrame(raf);
+            if (container) {
+              container.removeEventListener('keydown', keydown);
+              container.removeEventListener('keyup', keyup);
+            }
+            if (canvas) {
+              canvas.removeEventListener('pointermove', pointerMove);
+              canvas.removeEventListener('pointerdown', pointerDown);
+            }
+            if (root) root.remove();
+            root = null;
+            canvas = null;
+            ctx = null;
+            container = null;
+          },
+        };
+      },
+    };
+
+    // Ported from vrk/space-invaders (MIT, Copyright (c) 2017).
+    // Adapted for DSH: container-scoped input, pause/resume/destroy, canvas
+    // scaling, localized text screens. Game rules and classes are unchanged.
+    const invadersGame = {
+      id: 'invaders',
+      titleKey: 'invadersTitle',
+      descKey: 'invadersDesc',
+      tagKey: 'invadersTag',
+      adapter: 'native',
+      minSize: { w: 360, h: 420 },
+      create(host) {
+        const W = 600;
+        const H = 600;
+
+        class Rectangle {
+          constructor(x, y, width, height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+          }
+
+          detectCollision(other) {
+            const myRightX = this.x + this.width;
+            const otherRightX = other.x + other.width;
+            if (this.x > otherRightX) return false;
+            if (other.x > myRightX) return false;
+            if (this.isBelow(other)) return false;
+            if (this.isAbove(other)) return false;
+            return true;
+          }
+
+          intersectsX(other) {
+            const myRightX = this.x + this.width;
+            const otherRightX = other.x + other.width;
+            if (this.x > otherRightX) return false;
+            if (other.x > myRightX) return false;
+            return true;
+          }
+
+          isAbove(other) {
+            return other.y > this.y + this.height;
+          }
+
+          isBelow(other) {
+            return this.y > other.y + other.height;
+          }
+        }
+
+        const BULLET_Y_VELOCITY = 5;
+        const BULLET_SIZE = 5;
+
+        class Bullet extends Rectangle {
+          constructor(startX, startY) {
+            super(startX, startY, BULLET_SIZE, BULLET_SIZE);
+            this.color = 'white';
+            this.yVelocity = BULLET_Y_VELOCITY;
+            this.alive = true;
+          }
+
+          update() {
+            const newY = this.y + this.yVelocity;
+            if (newY > H - BULLET_SIZE) this.kill();
+            this.y = newY;
+          }
+
+          render(ctx) {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+          }
+
+          kill() {
+            this.alive = false;
+          }
+
+          isAlive() {
+            return this.alive;
+          }
+        }
+
+        const BARRIER_HEIGHT = 40;
+        const BARRIER_WIDTH = 70;
+        const BARRIER_MAX_HEALTH = 10;
+
+        class Barrier extends Rectangle {
+          constructor(startX, startY) {
+            super(startX, startY, BARRIER_WIDTH, BARRIER_HEIGHT);
+            this.health = BARRIER_MAX_HEALTH;
+          }
+
+          resolveEnemyCollisions(bullets) {
+            if (bullets.length === 0) return;
+            bullets.forEach((bullet) => {
+              if (this.detectCollision(bullet) || (this.intersectsX(bullet) && bullet.isBelow(this))) {
+                this.health -= 1;
+                const height = Math.ceil((this.health / BARRIER_MAX_HEALTH) * BARRIER_HEIGHT);
+                const diff = this.height - height;
+                this.y += diff;
+                this.height = height;
+                bullet.kill();
+              }
+            });
+          }
+
+          resolvePlayerCollisions(bullet) {
+            if (!bullet) return;
+            if (this.detectCollision(bullet) || (this.intersectsX(bullet) && bullet.isAbove(this))) {
+              this.health -= 1;
+              this.height = Math.floor((this.health / BARRIER_MAX_HEALTH) * BARRIER_HEIGHT);
+              bullet.kill();
+            }
+          }
+
+          isAlive() {
+            return this.health > 0;
+          }
+
+          render(ctx) {
+            ctx.fillStyle = 'blueviolet';
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+          }
+        }
+
+        const ENEMY_BOX_HEIGHT = 20;
+        const ENEMY_BOX_WIDTH = 30;
+        const ENEMY_COL_MARGIN = 7;
+        const ENEMY_ROW_MARGIN = 18;
+        const NUMBER_COLUMNS = 11;
+        const NUMBER_ROWS = 5;
+        const FLEET_START_Y = 150;
+        const FLEET_WIDTH = (NUMBER_COLUMNS - 1) * ENEMY_COL_MARGIN + NUMBER_COLUMNS * ENEMY_BOX_WIDTH;
+        const FLEET_START_X = (FLEET_WIDTH - 2 * ENEMY_COL_MARGIN) / 4;
+        const UPDATE_FREQUENCY_START = 45;
+        const UPDATE_FREQUENCY_MIN = 4;
+        const ENEMY_SHOOT_PROBABILITY = 0.5;
+        const ENEMY_MAYBE_SHOOT_FREQUENCY = 120;
+
+        class Enemy extends Rectangle {
+          constructor(startX, startY, onBumpedEdge, onReachedEnd) {
+            super(startX, startY, ENEMY_BOX_WIDTH, ENEMY_BOX_HEIGHT);
+            this.onBumpedEdge = onBumpedEdge;
+            this.onReachedEnd = onReachedEnd;
+            this.color = 'white';
+            this.xVelocity = 5;
+            this.shouldHighlight = false;
+            this.highlightTicks = 0;
+            this.alive = true;
+          }
+
+          advanceY() {
+            this.xVelocity *= -1;
+            const newY = this.y + ENEMY_ROW_MARGIN;
+            const bound = H - ENEMY_BOX_HEIGHT * 4;
+            if (newY >= bound) this.onReachedEnd();
+            else this.y = newY;
+          }
+
+          advanceX() {
+            const leftBound = ENEMY_COL_MARGIN;
+            const rightBound = W - this.width - ENEMY_COL_MARGIN;
+            const newX = this.x + this.xVelocity;
+            const nextX = this.x + 2 * this.xVelocity;
+            if (nextX > rightBound || nextX < leftBound) this.onBumpedEdge();
+            this.x = newX;
+          }
+
+          render(ctx) {
+            if (this.shouldHighlight) {
+              if (this.highlightTicks >= 10) {
+                this.highlightTicks = 0;
+                this.shouldHighlight = false;
+                this.color = 'white';
+              } else {
+                if (this.highlightTicks === 0) this.color = 'red';
+                this.highlightTicks += 1;
+              }
+            }
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+          }
+
+          highlight() {
+            this.shouldHighlight = true;
+          }
+
+          kill() {
+            this.alive = false;
+          }
+
+          isAlive() {
+            return this.alive;
+          }
+
+          createBullet() {
+            return new Bullet(this.x + this.width / 2, this.y + this.height / 2);
+          }
+        }
+
+        class EnemyFleet {
+          constructor(onNewBullet, onEnemyKilled) {
+            this.onNewBullet = onNewBullet;
+            this.onEnemyKilled = onEnemyKilled;
+            this.onBumpedEdge = this.onBumpedEdge.bind(this);
+            this.onReachedEnd = this.onReachedEnd.bind(this);
+          }
+
+          start() {
+            this.restart();
+          }
+
+          restart() {
+            this.enemies = [];
+            this.enemiesByColRow = [];
+            this.numberKilled = 0;
+            this.ticksSoFar = 0;
+            this.ticksSinceLastSpeedUp = 0;
+            this.updateFrequency = UPDATE_FREQUENCY_START;
+            this.needsNextRow = false;
+            this.conquered = false;
+
+            for (let col = 0; col < NUMBER_COLUMNS; col += 1) {
+              const startX = FLEET_START_X + (ENEMY_BOX_WIDTH + ENEMY_COL_MARGIN) * col;
+              this.enemiesByColRow[col] = [];
+              for (let row = 0; row < NUMBER_ROWS; row += 1) {
+                const startY = FLEET_START_Y + (ENEMY_BOX_HEIGHT + ENEMY_ROW_MARGIN) * row;
+                const enemy = new Enemy(startX, startY, this.onBumpedEdge, this.onReachedEnd);
+                this.enemies.push(enemy);
+                this.enemiesByColRow[col].push(enemy);
+              }
+            }
+          }
+
+          resolveCollisions(bullet) {
+            if (!bullet) return;
+            this.enemies.forEach((enemy) => {
+              if (enemy.detectCollision(bullet)) {
+                enemy.kill();
+                bullet.kill();
+                this.numberKilled += 1;
+                this.onEnemyKilled();
+              }
+            });
+            this.enemies = this.enemies.filter((enemy) => enemy.isAlive());
+          }
+
+          update(dt) {
+            this.ticksSoFar += dt;
+            this.ticksSinceLastSpeedUp += dt;
+
+            if (this.ticksSoFar % ENEMY_MAYBE_SHOOT_FREQUENCY === 0) {
+              for (let i = 0; i < 2; i += 1) {
+                if (Math.random() < ENEMY_SHOOT_PROBABILITY) {
+                  const shooter = this.chooseRandomShooter();
+                  if (shooter) {
+                    this.onNewBullet(shooter.createBullet());
+                    shooter.highlight();
+                  }
+                }
+              }
+            }
+
+            if (this.ticksSinceLastSpeedUp % this.updateFrequency === 0) {
+              if (this.needsNextRow) {
+                this.enemies.forEach((enemy) => enemy.advanceY());
+                this.needsNextRow = false;
+              } else {
+                this.enemies.forEach((enemy) => enemy.advanceX());
+              }
+              if (this.numberKilled > 0) {
+                this.updateFrequency = Math.max(this.updateFrequency - this.numberKilled, UPDATE_FREQUENCY_MIN);
+                this.ticksSinceLastSpeedUp = 0;
+                this.numberKilled = 0;
+              }
+            }
+          }
+
+          render(ctx) {
+            this.enemies.forEach((enemy) => enemy.render(ctx));
+          }
+
+          hasConquered() {
+            return this.conquered;
+          }
+
+          isDefeated() {
+            return this.enemies.length === 0;
+          }
+
+          onBumpedEdge() {
+            this.needsNextRow = true;
+          }
+
+          onReachedEnd() {
+            this.conquered = true;
+          }
+
+          chooseRandomShooter() {
+            const potentialShooters = [];
+            for (const row of this.enemiesByColRow) {
+              for (let i = row.length - 1; i >= 0; i -= 1) {
+                const enemy = row[i];
+                if (enemy.isAlive()) {
+                  potentialShooters.push(enemy);
+                  break;
+                }
+              }
+            }
+            if (potentialShooters.length === 0) return null;
+            return potentialShooters[Math.floor(Math.random() * potentialShooters.length)];
+          }
+        }
+
+        const PLAYER_BULLET_Y_VELOCITY = 9;
+        const PLAYER_BULLET_SIZE = 5;
+
+        class PlayerBullet extends Rectangle {
+          constructor(startX, startY) {
+            super(startX, startY, PLAYER_BULLET_SIZE, PLAYER_BULLET_SIZE);
+            this.color = 'white';
+            this.yVelocity = -PLAYER_BULLET_Y_VELOCITY;
+            this.alive = true;
+          }
+
+          update() {
+            const newY = this.y + this.yVelocity;
+            if (newY < 0) this.kill();
+            this.y = newY;
+          }
+
+          render(ctx) {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+          }
+
+          kill() {
+            this.alive = false;
+          }
+
+          isAlive() {
+            return this.alive;
+          }
+        }
+
+        const PLAYER_SHIP_HEIGHT = 20;
+        const PLAYER_SHIP_WIDTH = 40;
+        const PLAYER_SHIP_SPEED = 4;
+        const PLAYER_MAX_HEALTH = 3;
+
+        class PlayerShip extends Rectangle {
+          constructor(onNewBullet, keyTarget) {
+            super((W - PLAYER_SHIP_WIDTH) / 2, H - PLAYER_SHIP_HEIGHT * 1.5, PLAYER_SHIP_WIDTH, PLAYER_SHIP_HEIGHT);
+            this.onNewBullet = onNewBullet;
+            this.keyTarget = keyTarget;
+            this.onKeyDown = this.onKeyDown.bind(this);
+            this.onKeyUp = this.onKeyUp.bind(this);
+            this.lastBullet = null;
+          }
+
+          start() {
+            this.restart();
+            this.health = PLAYER_MAX_HEALTH;
+            this.keyTarget.addEventListener('keyup', this.onKeyUp);
+            this.keyTarget.addEventListener('keydown', this.onKeyDown);
+          }
+
+          restart() {
+            this.health = Math.min(this.health + 1, PLAYER_MAX_HEALTH);
+            this.xVelocity = 0;
+            this.arrowsPressed = [];
+          }
+
+          stop() {
+            this.keyTarget.removeEventListener('keyup', this.onKeyUp);
+            this.keyTarget.removeEventListener('keydown', this.onKeyDown);
+          }
+
+          update() {
+            this.x = Math.max(Math.min(this.x + this.xVelocity, W - PLAYER_SHIP_WIDTH), 0);
+            if (this.lastBullet && !this.lastBullet.isAlive()) this.lastBullet = null;
+          }
+
+          resolveCollisions(enemyBullets) {
+            if (enemyBullets.length === 0) return;
+            enemyBullets.forEach((bullet) => {
+              if (this.detectCollision(bullet)) {
+                this.health -= 1;
+                bullet.kill();
+              }
+            });
+          }
+
+          render(ctx) {
+            if (this.health >= PLAYER_MAX_HEALTH) ctx.fillStyle = 'hotpink';
+            else if (this.health === 2) ctx.fillStyle = 'yellow';
+            else ctx.fillStyle = 'red';
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+          }
+
+          isAlive() {
+            return this.health > 0;
+          }
+
+          shootBullet() {
+            if (this.lastBullet) return;
+            const bullet = new PlayerBullet(this.x + this.width / 2, this.y + this.height / 2);
+            this.lastBullet = bullet;
+            this.onNewBullet(bullet);
+          }
+
+          onKeyDown(event) {
+            const key = event.key;
+            if (key === 'ArrowLeft') {
+              event.preventDefault();
+              this.xVelocity = -PLAYER_SHIP_SPEED;
+              this.arrowsPressed.push(key);
+            } else if (key === 'ArrowRight') {
+              event.preventDefault();
+              this.xVelocity = PLAYER_SHIP_SPEED;
+              this.arrowsPressed.push(key);
+            } else if (key === ' ') {
+              event.preventDefault();
+              this.shootBullet();
+            }
+          }
+
+          onKeyUp(event) {
+            const key = event.key;
+            this.arrowsPressed = this.arrowsPressed.filter((element) => element !== key);
+            if (this.arrowsPressed.length === 0) this.xVelocity = 0;
+          }
+        }
+
+        class ScoreKeeper {
+          constructor() {
+            this.score = 0;
+          }
+
+          update() {
+            this.score += 10;
+          }
+
+          render(ctx) {
+            ctx.fillStyle = 'blueviolet';
+            ctx.font = '20px Consolas, monospace';
+            ctx.textAlign = 'right';
+            ctx.fillText(t('invadersScore') + ': ' + this.score, W - 10, 30);
+            ctx.textAlign = 'left';
+          }
+
+          getScore() {
+            return this.score;
+          }
+        }
+
+        class TextWriter {
+          constructor(context) {
+            this.ctx = context;
+            this.y = H / 3;
+            this.color = 'white';
+          }
+
+          writeLine(textInput) {
+            const text = textInput || '';
+            this.ctx.fillStyle = this.color;
+            this.ctx.font = '20px Consolas, monospace';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(text, W / 2, this.y);
+            this.ctx.textAlign = 'left';
+            this.y += 30;
+          }
+        }
+
+        const FPS = 60;
+        const SECONDS_PER_TICK = 1 / FPS;
+
+        class SpaceGame {
+          constructor(canvas, onGameOver, keyTarget) {
+            this.onNewEnemyBullet = this.onNewEnemyBullet.bind(this);
+            this.onNewPlayerBullet = this.onNewPlayerBullet.bind(this);
+            this.onEnemyKilled = this.onEnemyKilled.bind(this);
+            this.onGameOver = onGameOver;
+            this.canvas = canvas;
+            this.ctx = canvas.getContext('2d');
+            this.keyTarget = keyTarget;
+            this.running = false;
+            this.pausedState = false;
+            this.loopHandle = 0;
+          }
+
+          start() {
+            this.playerShip = new PlayerShip(this.onNewPlayerBullet, this.keyTarget);
+            this.enemyFleet = new EnemyFleet(this.onNewEnemyBullet, this.onEnemyKilled);
+            this.barriers = this.constructBarriers();
+            this.enemyBullets = [];
+            this.scoreKeeper = new ScoreKeeper();
+            this.playerShip.start();
+            this.enemyFleet.start();
+            this.startGameLoop();
+          }
+
+          startGameLoop() {
+            this.running = true;
+            this.pausedState = false;
+            const startTime = performance.now();
+            let ticksLastTime = 0;
+            const gameLoop = (timestamp) => {
+              if (!this.running) return;
+              this.clearScreen();
+              const secondsSinceStart = (timestamp - startTime) / 1000;
+              const ticksSinceStart = Math.floor(secondsSinceStart / SECONDS_PER_TICK);
+              const ticksDelta = ticksSinceStart - ticksLastTime;
+
+              this.playerShip.update();
+              this.playerShip.render(this.ctx);
+              this.enemyFleet.update(ticksDelta);
+              this.enemyFleet.render(this.ctx);
+              this.barriers.forEach((barrier) => barrier.render(this.ctx));
+              this.scoreKeeper.render(this.ctx);
+
+              if (this.playerBullet) this.playerBullet.update();
+              this.filterBulletsByLiving();
+              if (this.playerBullet) this.playerBullet.render(this.ctx);
+
+              this.enemyBullets.forEach((bullet) => bullet.update());
+              this.enemyBullets = this.enemyBullets.filter((bullet) => bullet.isAlive());
+              this.enemyBullets.forEach((bullet) => bullet.render(this.ctx));
+
+              this.enemyFleet.resolveCollisions(this.playerBullet);
+              this.playerShip.resolveCollisions(this.enemyBullets);
+              this.filterBulletsByLiving();
+              this.barriers.forEach((barrier) => barrier.resolveEnemyCollisions(this.enemyBullets));
+              this.barriers.forEach((barrier) => barrier.resolvePlayerCollisions(this.playerBullet));
+              this.barriers = this.barriers.filter((barrier) => barrier.isAlive());
+              this.filterBulletsByLiving();
+
+              ticksLastTime = ticksSinceStart;
+              if (!this.enemyFleet.hasConquered() && this.playerShip.isAlive()) {
+                if (this.enemyFleet.isDefeated()) this.nextLevel();
+                this.loopHandle = requestAnimationFrame(gameLoop);
+              } else {
+                this.stop();
+              }
+            };
+            this.loopHandle = requestAnimationFrame(gameLoop);
+          }
+
+          pause() {
+            if (!this.running) return;
+            this.running = false;
+            this.pausedState = true;
+            if (this.loopHandle) cancelAnimationFrame(this.loopHandle);
+            const writer = new TextWriter(this.ctx);
+            writer.y = H / 2 - 20;
+            writer.writeLine(t('invadersPaused'));
+            writer.writeLine(t('invadersResume'));
+          }
+
+          resume() {
+            if (!this.pausedState) return;
+            this.startGameLoop();
+          }
+
+          isPaused() {
+            return this.pausedState;
+          }
+
+          stop() {
+            this.running = false;
+            this.pausedState = false;
+            if (this.loopHandle) cancelAnimationFrame(this.loopHandle);
+            if (this.playerShip) this.playerShip.stop();
+            this.onGameOver(this.scoreKeeper ? this.scoreKeeper.getScore() : 0);
+          }
+
+          destroy() {
+            this.running = false;
+            this.pausedState = false;
+            if (this.loopHandle) cancelAnimationFrame(this.loopHandle);
+            if (this.playerShip) this.playerShip.stop();
+          }
+
+          nextLevel() {
+            this.playerShip.restart();
+            this.enemyFleet.restart();
+            this.enemyBullets = [];
+            this.playerBullet = null;
+          }
+
+          clearScreen() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          }
+
+          onNewEnemyBullet(bullet) {
+            this.enemyBullets.push(bullet);
+          }
+
+          onNewPlayerBullet(bullet) {
+            this.playerBullet = bullet;
+          }
+
+          onEnemyKilled() {
+            this.scoreKeeper.update();
+          }
+
+          constructBarriers() {
+            const BARRIER_MARGIN = 10;
+            const NUMBER_BARRIERS = 4;
+            const BARRIER_Y_POSITION = H * 0.75;
+            const barriers = [];
+            const maxWidth = W - BARRIER_MARGIN * 2;
+            const sectionWidth = maxWidth / NUMBER_BARRIERS;
+            const xOffset = (sectionWidth - BARRIER_WIDTH) / 2;
+            for (let i = 0; i < NUMBER_BARRIERS; i += 1) {
+              barriers.push(new Barrier(i * sectionWidth + xOffset + BARRIER_MARGIN, BARRIER_Y_POSITION));
+            }
+            return barriers;
+          }
+
+          filterBulletsByLiving() {
+            this.enemyBullets = this.enemyBullets.filter((bullet) => bullet.isAlive());
+            if (this.playerBullet && !this.playerBullet.isAlive()) this.playerBullet = null;
+          }
+        }
+
+        class App {
+          constructor(canvas, container) {
+            this.canvas = canvas;
+            this.container = container;
+            this.ctx = canvas.getContext('2d');
+            this.game = null;
+            this.acceptStart = true;
+            this.onKeyUp = this.onKeyUp.bind(this);
+            this.onKeyDown = this.onKeyDown.bind(this);
+            container.addEventListener('keyup', this.onKeyUp);
+            container.addEventListener('keydown', this.onKeyDown);
+          }
+
+          showIntro() {
+            this.clear();
+            const writer = new TextWriter(this.ctx);
+            writer.writeLine(t('invadersTitle'));
+            writer.writeLine('');
+            writer.writeLine(t('invadersStart'));
+          }
+
+          gameOver(score) {
+            this.acceptStart = true;
+            this.game = null;
+            this.clear();
+            const writer = new TextWriter(this.ctx);
+            writer.writeLine(t('invadersOver'));
+            writer.writeLine(t('invadersScore') + ': ' + score);
+            writer.writeLine('');
+            writer.writeLine(t('invadersRestart'));
+          }
+
+          onKeyUp(event) {
+            if (event.key === 'Enter' && this.acceptStart) this.startGame();
+          }
+
+          onKeyDown(event) {
+            if (!this.game) return;
+            if (event.key === 'p' || event.key === 'P') {
+              event.preventDefault();
+              if (this.game.isPaused()) this.game.resume();
+              else this.game.pause();
+            }
+          }
+
+          startGame() {
+            this.acceptStart = false;
+            if (this.game) {
+              this.game.destroy();
+              this.game = null;
+            }
+            this.clear();
+            this.game = new SpaceGame(this.canvas, (score) => this.gameOver(score), this.container);
+            this.game.start();
+          }
+
+          pause() {
+            if (this.game) this.game.pause();
+          }
+
+          resume() {
+            if (this.game) this.game.resume();
+          }
+
+          clear() {
+            this.ctx.clearRect(0, 0, W, H);
+          }
+
+          destroy() {
+            this.acceptStart = false;
+            this.container.removeEventListener('keyup', this.onKeyUp);
+            this.container.removeEventListener('keydown', this.onKeyDown);
+            if (this.game) this.game.destroy();
+            this.game = null;
+          }
+        }
+
+        let root = null;
+        let canvas = null;
+        let app = null;
+        let container = null;
+
+        function layout() {
+          if (!canvas || !container) return;
+          const rect = container.getBoundingClientRect();
+          const size = Math.max(120, Math.floor(Math.min(rect.width, rect.height)));
+          canvas.style.width = size + 'px';
+          canvas.style.height = size + 'px';
+        }
+
+        return {
+          mount(target) {
+            container = target;
+            root = document.createElement('div');
+            root.className = 'invaders-game';
+            canvas = document.createElement('canvas');
+            canvas.width = W;
+            canvas.height = H;
+            root.appendChild(canvas);
+            target.appendChild(root);
+            target.tabIndex = 0;
+            target.style.outline = 'none';
+            app = new App(canvas, target);
+            app.showIntro();
+            layout();
+            if (target.focus) target.focus({ preventScroll: true });
+          },
+          resize() {
+            layout();
+          },
+          pause() {
+            if (app) app.pause();
+          },
+          resume() {
+            if (app) app.resume();
+          },
+          destroy() {
+            if (app) app.destroy();
+            if (root) root.remove();
+            root = null;
+            canvas = null;
+            app = null;
+            container = null;
+          },
+        };
+      },
+    };
+
+    // Ported from taniarascia/sokoban (MIT, Copyright (c) 2021 Tania Rascia).
+    // Adapted for DSH: canvas inside the game container, scoped keyboard input,
+    // restart control, localized win text. Level and rules are unchanged.
+    const sokobanGame = {
+      id: 'sokoban',
+      titleKey: 'sokobanTitle',
+      descKey: 'sokobanDesc',
+      tagKey: 'sokobanTag',
+      adapter: 'native',
+      minSize: { w: 320, h: 380 },
+      create(host) {
+        const EMPTY = 'empty';
+        const WALL = 'wall';
+        const BLOCK = 'block';
+        const SUCCESS_BLOCK = 'success_block';
+        const VOID = 'void';
+        const PLAYER = 'player';
+        const W = 600;
+        const H = 675;
+        const CELL = 75;
+        const COLORS = {
+          empty: { fill: '#ded7b3', stroke: '#ded7b3' },
+          wall: { fill: '#868687', stroke: '#505051' },
+          block: { fill: '#d9ae0a', stroke: '#C79300' },
+          success_block: { fill: '#4ccd5a', stroke: '#3ca448' },
+          void: { fill: '#dfbbb1', stroke: '#ca8e7d' },
+          player: { fill: '#4f99e8', stroke: '#3f7ab9' },
+        };
+        const LEVEL_ONE = [
+          [EMPTY, EMPTY, WALL, WALL, WALL, WALL, WALL, EMPTY],
+          [WALL, WALL, WALL, EMPTY, EMPTY, EMPTY, WALL, EMPTY],
+          [WALL, VOID, PLAYER, BLOCK, EMPTY, EMPTY, WALL, EMPTY],
+          [WALL, WALL, WALL, EMPTY, BLOCK, VOID, WALL, EMPTY],
+          [WALL, VOID, WALL, WALL, BLOCK, EMPTY, WALL, EMPTY],
+          [WALL, EMPTY, WALL, EMPTY, VOID, EMPTY, WALL, WALL],
+          [WALL, BLOCK, EMPTY, SUCCESS_BLOCK, BLOCK, BLOCK, VOID, WALL],
+          [WALL, EMPTY, EMPTY, EMPTY, VOID, EMPTY, EMPTY, WALL],
+          [WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL],
+        ];
+        const DIRECTIONS = { up: 'up', down: 'down', left: 'left', right: 'right' };
+
+        const isBlock = (cell) => cell === BLOCK || cell === SUCCESS_BLOCK;
+        const isTraversible = (cell) => cell === EMPTY || cell === VOID;
+        const isWall = (cell) => cell === WALL;
+        const isVoid = (cell) => cell === VOID || cell === SUCCESS_BLOCK;
+        const getX = (x, direction, spaces) => {
+          if (direction === DIRECTIONS.left) return x - (spaces || 1);
+          if (direction === DIRECTIONS.right) return x + (spaces || 1);
+          return x;
+        };
+        const getY = (y, direction, spaces) => {
+          if (direction === DIRECTIONS.up) return y - (spaces || 1);
+          if (direction === DIRECTIONS.down) return y + (spaces || 1);
+          return y;
+        };
+        const cloneLevel = () => JSON.parse(JSON.stringify(LEVEL_ONE));
+
+        let root = null;
+        let frame = null;
+        let canvas = null;
+        let ctx = null;
+        let container = null;
+        let board = null;
+        let restartButton = null;
+
+        function generate() {
+          board = cloneLevel();
+        }
+
+        function findPlayer() {
+          for (let y = 0; y < board.length; y += 1) {
+            const x = board[y].indexOf(PLAYER);
+            if (x >= 0) {
+              return {
+                x,
+                y,
+                above: board[y - 1][x],
+                below: board[y + 1][x],
+                sideLeft: board[y][x - 1],
+                sideRight: board[y][x + 1],
+              };
+            }
+          }
+          return null;
+        }
+
+        function paintCell(cell, x, y) {
+          const px = x * CELL;
+          const py = y * CELL;
+          if (cell === VOID || cell === PLAYER) {
+            const radius = cell === PLAYER ? 20 : 10;
+            ctx.beginPath();
+            ctx.rect(px, py, CELL, CELL);
+            ctx.fillStyle = COLORS.empty.fill;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(px + CELL / 2, py + CELL / 2, radius, 0, 2 * Math.PI);
+            ctx.lineWidth = 10;
+            ctx.strokeStyle = COLORS[cell].stroke;
+            ctx.fillStyle = COLORS[cell].fill;
+            ctx.fill();
+            ctx.stroke();
+          } else {
+            const color = COLORS[cell] || COLORS.empty;
+            ctx.beginPath();
+            ctx.rect(px + 5, py + 5, CELL - 10, CELL - 10);
+            ctx.fillStyle = color.fill;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.rect(px + 5, py + 5, CELL - 10, CELL - 10);
+            ctx.lineWidth = 10;
+            ctx.strokeStyle = color.stroke;
+            ctx.stroke();
+          }
+        }
+
+        function render() {
+          ctx.fillStyle = COLORS.empty.fill;
+          ctx.fillRect(0, 0, W, H);
+          board.forEach((row, y) => row.forEach((cell, x) => paintCell(cell, x, y)));
+          const onTarget = board.reduce(
+            (sum, row) => sum + row.filter((cell) => cell === SUCCESS_BLOCK).length,
+            0,
+          );
+          if (onTarget === 6) {
+            ctx.fillStyle = 'rgba(17,17,17,.86)';
+            ctx.fillRect(0, 0, W, H);
+            ctx.font = 'bold 44px ui-sans-serif, system-ui, sans-serif';
+            ctx.fillStyle = COLORS.success_block.fill;
+            ctx.textAlign = 'center';
+            ctx.fillText(t('sokobanWin'), W / 2, H / 2);
+            ctx.textAlign = 'left';
+          }
+        }
+
+        function movePlayer(playerCoords, direction) {
+          board[playerCoords.y][playerCoords.x] = isVoid(LEVEL_ONE[playerCoords.y][playerCoords.x])
+            ? VOID
+            : EMPTY;
+          board[getY(playerCoords.y, direction, 1)][getX(playerCoords.x, direction, 1)] = PLAYER;
+        }
+
+        function movePlayerAndBoxes(playerCoords, direction) {
+          const newPlayerY = getY(playerCoords.y, direction, 1);
+          const newPlayerX = getX(playerCoords.x, direction, 1);
+          const newBoxY = getY(playerCoords.y, direction, 2);
+          const newBoxX = getX(playerCoords.x, direction, 2);
+          if (isWall(board[newBoxY][newBoxX])) return;
+
+          if (isBlock(board[newBoxY][newBoxX])) {
+            let blocksInARow = 1;
+            let offset = 0;
+            while (isBlock(board[getY(newBoxY, direction, offset)][getX(newBoxX, direction, offset)])) {
+              blocksInARow += 1;
+              offset += 1;
+            }
+            const nextBlock =
+              board[getY(newPlayerY, direction, blocksInARow)][getX(newPlayerX, direction, blocksInARow)];
+            if (isTraversible(nextBlock)) {
+              for (let i = 0; i < blocksInARow; i += 1) {
+                const y = getY(newBoxY, direction, i);
+                const x = getX(newBoxX, direction, i);
+                board[y][x] = isVoid(LEVEL_ONE[y][x]) ? SUCCESS_BLOCK : BLOCK;
+              }
+              movePlayer(playerCoords, direction);
+            }
+          } else {
+            board[newBoxY][newBoxX] = isVoid(LEVEL_ONE[newBoxY][newBoxX]) ? SUCCESS_BLOCK : BLOCK;
+            movePlayer(playerCoords, direction);
+          }
+        }
+
+        function move(direction) {
+          const player = findPlayer();
+          if (!player) return;
+          const adjacent = {
+            [DIRECTIONS.up]: player.above,
+            [DIRECTIONS.down]: player.below,
+            [DIRECTIONS.left]: player.sideLeft,
+            [DIRECTIONS.right]: player.sideRight,
+          }[direction];
+          if (isTraversible(adjacent)) movePlayer(player, direction);
+          else if (isBlock(adjacent)) movePlayerAndBoxes(player, direction);
+          render();
+        }
+
+        function restart() {
+          generate();
+          render();
+        }
+
+        function keydown(event) {
+          const key = event.key;
+          if (key === 'ArrowUp' || key === 'w' || key === 'W') {
+            event.preventDefault();
+            move(DIRECTIONS.up);
+          } else if (key === 'ArrowDown' || key === 's' || key === 'S') {
+            event.preventDefault();
+            move(DIRECTIONS.down);
+          } else if (key === 'ArrowLeft' || key === 'a' || key === 'A') {
+            event.preventDefault();
+            move(DIRECTIONS.left);
+          } else if (key === 'ArrowRight' || key === 'd' || key === 'D') {
+            event.preventDefault();
+            move(DIRECTIONS.right);
+          } else if (key === 'r' || key === 'R') {
+            restart();
+          }
+        }
+
+        function layout() {
+          if (!frame || !container || !canvas) return;
+          const rect = container.getBoundingClientRect();
+          const scale = Math.min(rect.width / W, rect.height / H);
+          const width = Math.max(120, Math.floor(W * scale));
+          const height = Math.max(135, Math.floor(H * scale));
+          frame.style.width = width + 'px';
+          frame.style.height = height + 'px';
+          canvas.style.width = '100%';
+          canvas.style.height = '100%';
+        }
+
+        return {
+          mount(target) {
+            container = target;
+            root = document.createElement('div');
+            root.className = 'sokoban-game';
+            frame = document.createElement('div');
+            frame.className = 'sokoban-frame';
+            canvas = document.createElement('canvas');
+            canvas.width = W;
+            canvas.height = H;
+            ctx = canvas.getContext('2d');
+            restartButton = document.createElement('button');
+            restartButton.type = 'button';
+            restartButton.className = 'sokoban-restart';
+            restartButton.textContent = t('sokobanRestart');
+            restartButton.addEventListener('click', restart);
+            frame.appendChild(canvas);
+            frame.appendChild(restartButton);
+            root.appendChild(frame);
+            target.appendChild(root);
+            target.tabIndex = 0;
+            target.style.outline = 'none';
+            target.addEventListener('keydown', keydown);
+            if (target.focus) target.focus({ preventScroll: true });
+            generate();
+            render();
+            layout();
+          },
+          resize() {
+            layout();
+          },
+          pause() {},
+          resume() {},
+          destroy() {
+            if (container) container.removeEventListener('keydown', keydown);
+            if (restartButton) restartButton.removeEventListener('click', restart);
+            if (root) root.remove();
+            root = null;
+            frame = null;
+            canvas = null;
+            ctx = null;
+            container = null;
+          },
+        };
+      },
+    };
+
+    const GAMES = [snakeGame, breakoutGame, game2048, pongGame, invadersGame, sokobanGame];
 
     function gameById(id) {
       for (const game of GAMES) if (game.id === id) return game;
@@ -1219,6 +2560,7 @@ window.__ModuleLoader__.load({
       background: null,
     };
     const listeners = new Set();
+    const themeListeners = new Set();
     let saveTimer = 0;
     let winSeq = 0;
     let noticeSeq = 0;
@@ -1932,7 +3274,16 @@ window.__ModuleLoader__.load({
     function createHost(definition, container, exit) {
       return {
         apiVersion: 1,
-        theme: { tokens: readThemeTokens(container) },
+        theme: {
+          tokens: readThemeTokens(container),
+          subscribe(listener) {
+            const wrapped = () => listener(readThemeTokens(container));
+            themeListeners.add(wrapped);
+            return () => {
+              themeListeners.delete(wrapped);
+            };
+          },
+        },
         locale: { t: t, language: 'zh' },
         audio: {
           unlock() {},
@@ -1992,6 +3343,8 @@ window.__ModuleLoader__.load({
 
     function GameRuntimeView(props) {
       const containerRef = React.useRef(null);
+      const runtimeRef = React.useRef(null);
+      const activeRef = React.useRef(props.active !== false);
       const exitRef = React.useRef(props.onExit);
       const [error, setError] = React.useState(null);
       const [nonce, setNonce] = React.useState(0);
@@ -1999,6 +3352,10 @@ window.__ModuleLoader__.load({
       React.useEffect(() => {
         exitRef.current = props.onExit;
       });
+
+      React.useEffect(() => {
+        activeRef.current = props.active !== false;
+      }, [props.active]);
 
       React.useEffect(() => {
         const container = containerRef.current;
@@ -2017,6 +3374,8 @@ window.__ModuleLoader__.load({
               ? createWebRuntime(props.definition, host)
               : props.definition.create(host);
           runtime.mount(container);
+          runtimeRef.current = runtime;
+          if (!activeRef.current) runtime.pause();
           const applySize = () => {
             if (disposed || !runtime) return;
             const rect = container.getBoundingClientRect();
@@ -2031,7 +3390,7 @@ window.__ModuleLoader__.load({
           applySize();
           visibleHandler = () => {
             if (!runtime) return;
-            if (document.hidden) runtime.pause();
+            if (document.hidden || !activeRef.current) runtime.pause();
             else runtime.resume();
           };
           document.addEventListener('visibilitychange', visibleHandler);
@@ -2045,6 +3404,7 @@ window.__ModuleLoader__.load({
           if (visibleHandler) document.removeEventListener('visibilitychange', visibleHandler);
           if (observer) observer.disconnect();
           if (raf) cancelAnimationFrame(raf);
+          runtimeRef.current = null;
           if (runtime) {
             try {
               runtime.destroy();
@@ -2054,6 +3414,13 @@ window.__ModuleLoader__.load({
           }
         };
       }, [props.definition, nonce]);
+
+      React.useEffect(() => {
+        const runtime = runtimeRef.current;
+        if (!runtime) return;
+        if (props.active === false) runtime.pause();
+        else if (!document.hidden) runtime.resume();
+      }, [props.active]);
 
       return h(
         'div',
@@ -2167,17 +3534,24 @@ window.__ModuleLoader__.load({
           h(
             'div',
             { className: 'dsh-games-stagebody' },
-            h('div', { className: 'dsh-games-swap', key: (snapshot.gameId || '') + (count > 0 ? '-windows' : '-embedded') },
-            count > 0
-              ? h(
-                  'div',
-                  { className: 'dsh-games-placeholder' },
-                  h('div', { className: 'dsh-games-placeholder-badge' }, h(GamepadIcon, { size: 22 })),
-                  h('strong', null, count + ' ' + t('windowsRunning')),
-                  h('p', null, t('floatingHint')),
-                  h('button', { className: 'dsh-games-btn', type: 'button', onClick: embedAll }, t('bringBack')),
-                )
-              : h(Boundary, null, h(GameRuntimeView, { definition: game, onExit: backToHub })),
+            h(
+              'div',
+              { className: 'dsh-games-swap', key: snapshot.gameId || 'embedded' },
+              h(
+                'div',
+                { className: 'dsh-games-embed', hidden: count > 0 },
+                h(Boundary, null, h(GameRuntimeView, { definition: game, active: count === 0, onExit: backToHub })),
+              ),
+              count > 0
+                ? h(
+                    'div',
+                    { className: 'dsh-games-placeholder' },
+                    h('div', { className: 'dsh-games-placeholder-badge' }, h(GamepadIcon, { size: 22 })),
+                    h('strong', null, count + ' ' + t('windowsRunning')),
+                    h('p', null, t('floatingHint')),
+                    h('button', { className: 'dsh-games-btn', type: 'button', onClick: embedAll }, t('bringBack')),
+                  )
+                : null,
             ),
           ),
         ),
@@ -2549,6 +3923,19 @@ window.__ModuleLoader__.load({
 
     function apply(ctx) {
       ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'dsh-games: dictionaries');
+      ctx.effect(
+        () =>
+          ctx.on('theme/change', () => {
+            for (const listener of themeListeners) {
+              try {
+                listener();
+              } catch (failure) {
+                console.error('[dsh-games] theme listener failed', failure);
+              }
+            }
+          }),
+        'dsh-games: theme',
+      );
       translate = ctx.locale.bind(NS);
       restore();
       detectDesktopWindows(ctx);
@@ -2686,6 +4073,8 @@ window.__ModuleLoader__.load({
 .dsh-games-bg-media{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.08);transform:scale(1.02)}
 .dsh-games-bg-veil{position:absolute;inset:0;background:color-mix(in srgb,var(--dsw-alias-bg-base) 56%,transparent)}
 .dsh-games-swap{position:absolute;inset:0;animation:dsh-games-fade .22s ease}
+.dsh-games-embed{position:absolute;inset:0}
+.dsh-games-embed[hidden]{display:none}
 .dsh-games-page--game{padding:16px 20px 20px}
 .dsh-games-page--game .dsh-games-wrap{max-width:none;gap:10px}
 .dsh-games-page--game .dsh-games-head{align-items:center}
@@ -2724,6 +4113,15 @@ window.__ModuleLoader__.load({
 .g2048-overlay[hidden]{display:none}
 .g2048-overlay strong{font-size:20px}
 .g2048-overlay span{font-size:12px;color:var(--dsw-alias-label-secondary)}
+.pong-game{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--dsw-alias-bg-base);overflow:hidden}
+.pong-game canvas{display:block;border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.35);background:#0b0d10;touch-action:none}
+.invaders-game{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--dsw-alias-bg-base);overflow:hidden}
+.invaders-game canvas{display:block;background:#000;border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.sokoban-game{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--dsw-alias-bg-base);overflow:hidden}
+.sokoban-frame{position:relative;display:block}
+.sokoban-frame canvas{display:block;width:100%;height:100%;border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.35);background:#ded7b3}
+.sokoban-restart{position:absolute;top:10px;right:10px;height:28px;padding:0 10px;border-radius:7px;border:1px solid rgba(0,0,0,.2);background:rgba(255,255,255,.82);color:#2a2a2a;font:inherit;font-size:12px;cursor:pointer}
+.sokoban-restart:hover{background:#fff}
 
 @keyframes dsh-games-enter-right{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:none}}
 @keyframes dsh-games-fade{from{opacity:0}to{opacity:1}}
